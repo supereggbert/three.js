@@ -62,8 +62,7 @@ var Renderer = Class.extend
 
 					this.matrix.transform( vertex.screen );
 					camera.projectionMatrix.transform( vertex.screen );
-
-					vertex.visible = vertex.screen.z > -1 && object.screen.z < 1;		
+					vertex.visible = vertex.screen.z > 0 && vertex.screen.z < 1;			
 					
 					//convert to screen coords
 					vertex.screen.x *= this.widthHalf;
@@ -140,12 +139,12 @@ var Renderer = Class.extend
 				
 				object.screen=object.screen.toVector3();
 				
-				if (object.screen.z > -1 && object.screen.z < 1 
+				if (object.screen.z > 0 && object.screen.z < 1 
 				&& object.screen.x+object.zsize > -1 && object.screen.x-object.zsize < 1
 				&& object.screen.y+object.zsize > -1 && object.screen.y-object.zsize < 1){
 					object.zsize *= this.widthHalf;
 					object.screen.x *= this.widthHalf;
-					object.screen.y *= this.heightHalf; 
+					object.screen.y *= -this.heightHalf;  // can't figure out why it's rendering upside down???
 					this.renderList.push( object );
 				}
 			}
