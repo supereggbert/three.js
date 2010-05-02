@@ -140,8 +140,8 @@ var Renderer = Class.extend
 				object.screen=object.screen.toVector3();
 				
 				if (object.screen.z > 0 && object.screen.z < 1 
-				&& object.screen.x+object.zsize > -1 && object.screen.x-object.zsize < 1
-				&& object.screen.y+object.zsize > -1 && object.screen.y-object.zsize < 1){
+				&& object.screen.x+object.zsize*object.size > -1 && object.screen.x-object.zsize*object.size < 1
+				&& object.screen.y+object.zsize*object.size > -1 && object.screen.y-object.zsize*object.size < 1){
 					object.zsize *= this.widthHalf;
 					object.screen.x *= this.widthHalf;
 					object.screen.y *= -this.heightHalf;  // can't figure out why it's rendering upside down???
