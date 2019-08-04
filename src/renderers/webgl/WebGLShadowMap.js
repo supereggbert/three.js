@@ -58,7 +58,7 @@ function WebGLShadowMap( _renderer, _objects, maxTextureSize ) {
 
 	var shadowMaterialVertical = new ShaderMaterial( {
 
-		defines:{
+		defines: {
 			SAMPLE_RATE: 2.0 / 8.0,
 			HALF_SAMPLE_RATE: 1.0 / 8.0
 		},
@@ -82,7 +82,7 @@ function WebGLShadowMap( _renderer, _objects, maxTextureSize ) {
 	fullScreenTri.addAttribute(
 		"position",
 		new BufferAttribute(
-			new Float32Array( [ -1, -1, 0.5, 3, -1, 0.5, -1, 3, 0.5 ] ),
+			new Float32Array( [ - 1, - 1, 0.5, 3, - 1, 0.5, - 1, 3, 0.5 ] ),
 			3
 		)
 	);
@@ -208,7 +208,7 @@ function WebGLShadowMap( _renderer, _objects, maxTextureSize ) {
 
 			}
 
-			if ( shadow.map === null && !shadow.isPointLight && this.type === VSMSoftShadowMap ) {
+			if ( shadow.map === null && ! shadow.isPointLight && this.type === VSMSoftShadowMap ) {
 
 				var pars = { minFilter: LinearFilter, magFilter: LinearFilter, format: RGBAFormat };
 
@@ -309,7 +309,7 @@ function WebGLShadowMap( _renderer, _objects, maxTextureSize ) {
 
 			// do blur pass for VSM
 
-			if ( !isPointLight  && this.type === VSMSoftShadowMap ) {
+			if ( ! isPointLight && this.type === VSMSoftShadowMap ) {
 
 				VSMPass( shadow, camera );
 
