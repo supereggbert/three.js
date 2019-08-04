@@ -15,6 +15,7 @@ function LightShadow( camera ) {
 	this.mapSize = new Vector2( 512, 512 );
 
 	this.map = null;
+	this.mapPass = null;
 	this.matrix = new Matrix4();
 
 }
