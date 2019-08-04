@@ -336,9 +336,9 @@ function WebGLShadowMap( _renderer, _objects, maxTextureSize ) {
 		_renderer.clear();
 		_renderer.renderBufferDirect( camera, null, geometry, shadowMaterialVertical, fullScreenMesh, null );
 
-	  // horizonal pass
+		// horizonal pass
 
-	  shadowMaterialHorizonal.uniforms.shadow_pass.value = shadow.mapPass.texture;
+		shadowMaterialHorizonal.uniforms.shadow_pass.value = shadow.mapPass.texture;
 		shadowMaterialHorizonal.uniforms.resolution.value = shadow.mapSize;
 		shadowMaterialHorizonal.uniforms.radius.value = shadow.radius;
 		_renderer.setRenderTarget( shadow.map );
