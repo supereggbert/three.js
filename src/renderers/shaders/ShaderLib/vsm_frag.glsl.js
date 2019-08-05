@@ -10,7 +10,7 @@ void main() {
   float mean = 0.0;
   float squared_mean = 0.0;
   
-  // This seems totally useless but it's a crazy work around for a Adreno compiler bug
+	// This seems totally useless but it's a crazy work around for a Adreno compiler bug
 	float depth = unpackRGBAToDepth( texture2D( shadow_pass, ( gl_FragCoord.xy  ) / resolution ) );
 
   for ( float i = -1.0; i < 1.0 ; i += SAMPLE_RATE) {
@@ -30,7 +30,7 @@ void main() {
     #endif
 
   }
-      
+
   mean = mean * HALF_SAMPLE_RATE;
   squared_mean = squared_mean * HALF_SAMPLE_RATE;
 
