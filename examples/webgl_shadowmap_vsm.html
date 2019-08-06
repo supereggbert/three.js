@@ -120,7 +120,7 @@
 				torusKnot.receiveShadow = true;
 				scene.add( torusKnot );
 
-				var geometry = new THREE.CylinderGeometry( 0.75, 0.75, 7, 32 );
+				var geometry = new THREE.CylinderBufferGeometry( 0.75, 0.75, 7, 32 );
 
 				var pillar1 = new THREE.Mesh( geometry, material );
 				pillar1.position.set( 10, 3.5, 10 );
@@ -204,7 +204,7 @@
 			function render() {
 
 				var delta = clock.getDelta();
-				var time = +new Date;
+				var time = clock.elapsedTime;
 
 				renderScene();
 
