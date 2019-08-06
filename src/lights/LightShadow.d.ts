@@ -12,6 +12,7 @@ export class LightShadow {
 	radius: number;
 	mapSize: Vector2;
 	map: RenderTarget;
+	mapPass: RenderTarget;
 	matrix: Matrix4;
 
 	copy( source: LightShadow ): this;
