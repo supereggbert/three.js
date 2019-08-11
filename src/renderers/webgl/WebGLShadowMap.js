@@ -180,8 +180,6 @@ function WebGLShadowMap( _renderer, _objects, maxTextureSize ) {
 
 				shadow.mapPass = new WebGLRenderTarget( _shadowMapSize.x, _shadowMapSize.y, pars );
 
-				shadow.camera.updateProjectionMatrix();
-
 			}
 
 			if ( shadow.map === null ) {
@@ -190,8 +188,6 @@ function WebGLShadowMap( _renderer, _objects, maxTextureSize ) {
 
 				shadow.map = new WebGLRenderTarget( _shadowMapSize.x, _shadowMapSize.y, pars );
 				shadow.map.texture.name = light.name + ".shadowMap";
-
-				shadow.camera.updateProjectionMatrix();
 
 			}
 
