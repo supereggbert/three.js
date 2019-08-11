@@ -178,9 +178,9 @@ function WebGLShadowMap( _renderer, _objects, maxTextureSize ) {
 				shadow.map = new WebGLRenderTarget( _shadowMapSize.x, _shadowMapSize.y, pars );
 				shadow.map.texture.name = light.name + ".shadowMap";
 
-				shadowCamera.updateProjectionMatrix();
-
 				shadow.mapPass = new WebGLRenderTarget( _shadowMapSize.x, _shadowMapSize.y, pars );
+
+				shadow.camera.updateProjectionMatrix();
 
 			}
 
@@ -190,6 +190,8 @@ function WebGLShadowMap( _renderer, _objects, maxTextureSize ) {
 
 				shadow.map = new WebGLRenderTarget( _shadowMapSize.x, _shadowMapSize.y, pars );
 				shadow.map.texture.name = light.name + ".shadowMap";
+
+				shadow.camera.updateProjectionMatrix();
 
 			}
 
@@ -259,7 +261,7 @@ function WebGLShadowMap( _renderer, _objects, maxTextureSize ) {
 
 	}
 
-	function getDepthMaterial( object, material, light, shadowCameraNear, shadowCameraFar ) {
+	function getDepthMaterial( object, material, light, shadowCameraNear, shadowCameraFar, type ) {
 
 		var geometry = object.geometry;
 
