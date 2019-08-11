@@ -100,7 +100,7 @@
 
 				// calc near
 
-				var nearPlaneScaleFactor = near / ( far - near ); 
+				var nearPlaneScaleFactor = near / (far + cameraOrigin.z); 
 				cameraFrustumBounds.max.multiplyScalar( nearPlaneScaleFactor );
 				cameraFrustumBounds.min.multiplyScalar( nearPlaneScaleFactor );
 
@@ -162,7 +162,7 @@
 			function initScene() {
 
 				dcamera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 1000 );
-				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 1000 );
+				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 500 );
 				camera.position.set( 0, 0, 30 );
 
 				scene = new THREE.Scene();
@@ -305,7 +305,8 @@
 
 			function renderScene() {
 
-				var lightDir=new THREE.Vector3(0,-1,0);
+				var lightDir=new THREE.Vector3(0,-10,0);
+				lightDir.normalize();
 
 				LiSPSM(camera, dcamera, lightDir)
 
