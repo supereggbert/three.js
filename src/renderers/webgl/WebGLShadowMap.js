@@ -37,22 +37,6 @@ function WebGLShadowMap( _renderer, _objects, maxTextureSize ) {
 
 	var shadowSide = { 0: BackSide, 1: FrontSide, 2: DoubleSide };
 
-<<<<<<< HEAD
-	var cubeDirections = [
-		new Vector3( 1, 0, 0 ), new Vector3( - 1, 0, 0 ), new Vector3( 0, 0, 1 ),
-		new Vector3( 0, 0, - 1 ), new Vector3( 0, 1, 0 ), new Vector3( 0, - 1, 0 )
-	];
-
-	var cubeUps = [
-		new Vector3( 0, 1, 0 ), new Vector3( 0, 1, 0 ), new Vector3( 0, 1, 0 ),
-		new Vector3( 0, 1, 0 ), new Vector3( 0, 0, 1 ),	new Vector3( 0, 0, - 1 )
-	];
-
-	var cube2DViewPorts = [
-		new Vector4(), new Vector4(), new Vector4(),
-		new Vector4(), new Vector4(), new Vector4()
-	];
-
 	var shadowMaterialVertical = new ShaderMaterial( {
 
 		defines: {
@@ -86,8 +70,6 @@ function WebGLShadowMap( _renderer, _objects, maxTextureSize ) {
 
 	var fullScreenMesh = new Mesh( fullScreenTri, shadowMaterialVertical );
 
-=======
->>>>>>> cfec7dd82b0d7925f8176748fd536320465c4382
 	// init
 
 	for ( var i = 0; i !== _NumberOfMaterialVariants; ++ i ) {
