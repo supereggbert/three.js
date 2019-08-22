@@ -52,14 +52,13 @@ export default /* glsl */`
 
 		if (hard_shadow != 1.0 ) {
 
-			float distance = clamp( 0.0, 1.0, compare - distribution.x );
+			float distance = compare - distribution.x ;
 			float variance = max( 0.00000, distribution.y * distribution.y );
 			float softness_probability = variance / (variance + distance * distance ); // Chebeyshevs inequality
-			softness_probability = clamp( ( softness_probability - 0.5 ) / ( 0.95 - 0.5 ), 0.0, 1.0 ); // 0.3 reduces light bleed
+			softness_probability = clamp( ( softness_probability - 0.3 ) / ( 0.95 - 0.3 ), 0.0, 1.0 ); // 0.3 reduces light bleed
 			occlusion = clamp( max( hard_shadow, softness_probability ), 0.0, 1.0 );
 
 		}
-
 		return occlusion;
 
 	}

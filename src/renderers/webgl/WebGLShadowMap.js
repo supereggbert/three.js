@@ -143,30 +143,6 @@ function WebGLShadowMap( _renderer, _objects, maxTextureSize ) {
 
 			_shadowMapSize.copy( shadow.mapSize );
 
-			if ( shadow.map === null && ! shadow.isPointLight && this.type === VSMSoftShadowMap ) {
-
-				var pars = { minFilter: LinearFilter, magFilter: LinearFilter, format: RGBAFormat };
-
-				shadow.map = new WebGLRenderTarget( _shadowMapSize.x, _shadowMapSize.y, pars );
-				shadow.map.texture.name = light.name + ".shadowMap";
-
-				shadow.mapPass = new WebGLRenderTarget( _shadowMapSize.x, _shadowMapSize.y, pars );
-
-				shadow.camera.updateProjectionMatrix();
-
-			}
-
-			if ( shadow.map === null ) {
-
-				var pars = { minFilter: NearestFilter, magFilter: NearestFilter, format: RGBAFormat };
-
-				shadow.map = new WebGLRenderTarget( _shadowMapSize.x, _shadowMapSize.y, pars );
-				shadow.map.texture.name = light.name + ".shadowMap";
-
-				shadow.camera.updateProjectionMatrix();
-
-			}
-
 			var shadowFrameExtents = shadow.getFrameExtents();
 
 			_shadowMapSize.multiply( shadowFrameExtents );
@@ -195,12 +171,27 @@ function WebGLShadowMap( _renderer, _objects, maxTextureSize ) {
 
 			}
 
+			if ( shadow.map === null && ! shadow.isPointLightShadow && this.type === VSMSoftShadowMap ) {
+
+				var pars = { minFilter: LinearFilter, magFilter: LinearFilter, format: RGBAFormat };
+
+				shadow.map = new WebGLRenderTarget( _shadowMapSize.x, _shadowMapSize.y, pars );
+				shadow.map.texture.name = light.name + ".shadowMap";
+
+				shadow.mapPass = new WebGLRenderTarget( _shadowMapSize.x, _shadowMapSize.y, pars );
+
+				shadow.camera.updateProjectionMatrix();
+
+			}
+
 			if ( shadow.map === null ) {
 
 				var pars = { minFilter: NearestFilter, magFilter: NearestFilter, format: RGBAFormat };
 
 				shadow.map = new WebGLRenderTarget( _shadowMapSize.x, _shadowMapSize.y, pars );
 				shadow.map.texture.name = light.name + ".shadowMap";
+
+				shadow.camera.updateProjectionMatrix();
 
 			}
 
@@ -232,7 +223,7 @@ function WebGLShadowMap( _renderer, _objects, maxTextureSize ) {
 
 			// do blur pass for VSM
 
-			if ( ! isPointLight && this.type === VSMSoftShadowMap ) {
+			if ( ! shadow.isPointLightShadow && this.type === VSMSoftShadowMap ) {
 
 				VSMPass( shadow, camera );
 
