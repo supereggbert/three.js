@@ -3,7 +3,7 @@
  * @author mrdoob / http://mrdoob.com/
  */
 
-import { FrontSide, BackSide, DoubleSide, RGBAFormat, NearestFilter, LinearFilter, PCFShadowMap, VSMSoftShadowMap, RGBADepthPacking, NoBlending } from '../../constants.js';
+import { FrontSide, BackSide, DoubleSide, RGBAFormat, NearestFilter, LinearFilter, PCFShadowMap, VSMShadowMap, RGBADepthPacking, NoBlending } from '../../constants.js';
 import { WebGLRenderTarget } from '../WebGLRenderTarget.js';
 import { MeshDepthMaterial } from '../../materials/MeshDepthMaterial.js';
 import { MeshDistanceMaterial } from '../../materials/MeshDistanceMaterial.js';
@@ -171,7 +171,7 @@ function WebGLShadowMap( _renderer, _objects, maxTextureSize ) {
 
 			}
 
-			if ( shadow.map === null && ! shadow.isPointLightShadow && this.type === VSMSoftShadowMap ) {
+			if ( shadow.map === null && ! shadow.isPointLightShadow && this.type === VSMShadowMap ) {
 
 				var pars = { minFilter: LinearFilter, magFilter: LinearFilter, format: RGBAFormat };
 
@@ -223,7 +223,7 @@ function WebGLShadowMap( _renderer, _objects, maxTextureSize ) {
 
 			// do blur pass for VSM
 
-			if ( ! shadow.isPointLightShadow && this.type === VSMSoftShadowMap ) {
+			if ( ! shadow.isPointLightShadow && this.type === VSMShadowMap ) {
 
 				VSMPass( shadow, camera );
 
@@ -350,7 +350,7 @@ function WebGLShadowMap( _renderer, _objects, maxTextureSize ) {
 		result.visible = material.visible;
 		result.wireframe = material.wireframe;
 
-		if ( type === VSMSoftShadowMap ) {
+		if ( type === VSMShadowMap ) {
 
 			result.side = ( material.shadowSide != null ) ? material.shadowSide : material.side;
 
@@ -387,7 +387,7 @@ function WebGLShadowMap( _renderer, _objects, maxTextureSize ) {
 
 		if ( visible && ( object.isMesh || object.isLine || object.isPoints ) ) {
 
-			if ( ( object.castShadow || ( object.receiveShadow && type === VSMSoftShadowMap ) ) && ( ! object.frustumCulled || _frustum.intersectsObject( object ) ) ) {
+			if ( ( object.castShadow || ( object.receiveShadow && type === VSMShadowMap ) ) && ( ! object.frustumCulled || _frustum.intersectsObject( object ) ) ) {
 
 				object.modelViewMatrix.multiplyMatrices( shadowCamera.matrixWorldInverse, object.matrixWorld );
 

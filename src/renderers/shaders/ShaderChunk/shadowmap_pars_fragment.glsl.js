@@ -158,7 +158,7 @@ export default /* glsl */`
 				texture2DShadowLerp( shadowMap, shadowMapSize, shadowCoord.xy + vec2( dx1, dy1 ), shadowCoord.z )
 			) * ( 1.0 / 9.0 );
 
-		#elif defined( SHADOWMAP_TYPE_VSM_SOFT )
+		#elif defined( SHADOWMAP_TYPE_VSM )
 
 			shadow = VSMShadow( shadowMap, shadowCoord.xy, shadowCoord.z );
 
@@ -260,7 +260,7 @@ export default /* glsl */`
 		// bd3D = base direction 3D
 		vec3 bd3D = normalize( lightToPosition );
 
-		#if defined( SHADOWMAP_TYPE_PCF ) || defined( SHADOWMAP_TYPE_PCF_SOFT ) || defined( SHADOWMAP_TYPE_VSM_SOFT )
+		#if defined( SHADOWMAP_TYPE_PCF ) || defined( SHADOWMAP_TYPE_PCF_SOFT ) || defined( SHADOWMAP_TYPE_VSM )
 
 			vec2 offset = vec2( - 1, 1 ) * shadowRadius * texelSize.y;
 

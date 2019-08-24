@@ -33,7 +33,7 @@ export enum ShadowMapType {}
 export const BasicShadowMap: ShadowMapType;
 export const PCFShadowMap: ShadowMapType;
 export const PCFSoftShadowMap: ShadowMapType;
-export const VSMSoftShadowMap: ShadowMapType;
+export const VSMShadowMap: ShadowMapType;
 
 // MATERIAL CONSTANTS
 
