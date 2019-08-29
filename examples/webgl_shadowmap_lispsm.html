@@ -63,6 +63,7 @@
 					var point = frustumCubePoints[ i ];
 					point.applyMatrix4( camera.projectionMatrixInverse );
 					point.applyMatrix4( camera.matrixWorld );
+					//point.clamp(new THREE.Vector3(-100,0,-100), new THREE.Vector3(100,30,100)); // clamp test
 					point.applyMatrix4( lightSpaceRotation );
 
 				}
@@ -86,7 +87,7 @@ box.copy(cameraFrustumBounds);
 				var sinGamma = Math.sqrt( 1 - cosGamma * cosGamma ); 
 
 				var warpOriginOffset = Math.sqrt( camera.near * camera.far ) / sinGamma;
-				warpOriginOffset = Math.min(camera.far,warpOriginOffset);
+				//warpOriginOffset = Math.min(camera.far,warpOriginOffset);
 
 				lightSpaceRotation.elements[12]=-center.x;
 				lightSpaceRotation.elements[13]=-center.y;
@@ -101,14 +102,14 @@ box.copy(cameraFrustumBounds);
 				for ( var i = 0; i < frustumCubePoints.length; i++ ){
 					var point = frustumCubePoints[ i ];
 					point.z=(point.z-center.z)-d*0.5-warpOriginOffset;
-					point.x=(point.x-center.x)/-point.z*far;
-					point.y=(point.y-center.y)/-point.z*far;
+					point.x=(point.x-center.x)/-point.z*near;
+					point.y=(point.y-center.y)/-point.z*near;
 				}
 				//console.log(frustumCubePoints);
 				cameraFrustumBounds.setFromPoints( frustumCubePoints );
-				var nearPlaneScaleFactor = near  / far; 
-				cameraFrustumBounds.max.multiplyScalar( nearPlaneScaleFactor );
-				cameraFrustumBounds.min.multiplyScalar( nearPlaneScaleFactor );
+				//var nearPlaneScaleFactor = near  / far; 
+				//cameraFrustumBounds.max.multiplyScalar( nearPlaneScaleFactor );
+				//cameraFrustumBounds.min.multiplyScalar( nearPlaneScaleFactor );
 
 				var left = cameraFrustumBounds.min.x;
 				var right = cameraFrustumBounds.max.x;
@@ -209,7 +210,7 @@ destCamera.getWorldDirection( cameraDirection ); // need to update matrix
 			function initScene() {
 
 				dcamera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 1000 );
-				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 500 );
+				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 300 );
 				camera.position.set( 0, 0, 30 );
 				camera2 = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 100 );
 				camera2.position.set( 0, 0, 30 );
