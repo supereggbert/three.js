@@ -20,9 +20,11 @@
 
 			import { OrbitControls } from './jsm/controls/OrbitControls.js';
 
-			var camera, dcamera, scene, renderer, clock, stats;
+			var camera, camera2,dcamera, scene, renderer, clock, stats;
 			var dirLight, spotLight;
 			var torusKnot, dirGroup;
+			var h1,bhelper;
+			var box=new THREE.Box3();
 
 			init();
 			animate();
@@ -31,20 +33,22 @@
 
 				var cameraDirection = new THREE.Vector3(); 
 				camera.getWorldDirection( cameraDirection );
-				//console.log(cameraDirection);
 				cameraDirection.z*=-1;
 
 				var warpY = lightDirection.clone();
 				warpY.negate();
 
 				var warpX = warpY.clone();
-				warpX.cross( cameraDirection );
+				warpX.cross( cameraDirection ).normalize();
 
 				var warpZ = warpX.clone();
-				warpZ.cross( warpY );
+				warpZ.cross( warpY ).normalize();
 
 				var lightSpaceRotation = new THREE.Matrix4();
 				lightSpaceRotation.makeBasis( warpX, warpY, warpZ );
+				/*var t=new THREE.Matrix4();
+				t.getInverse(lightSpaceRotation);
+				lightSpaceRotation=t;*/
 
 				var frustumCubePoints = [
 					new THREE.Vector3( - 1, - 1, -1),
@@ -55,7 +59,7 @@
 					new THREE.Vector3( 1, - 1, 1),
 					new THREE.Vector3( - 1, 1, 1),
 					new THREE.Vector3( 1, 1, 1)
-				];
+				];		
 
 				for ( var i = 0; i < frustumCubePoints.length; i++ ){
 
@@ -65,31 +69,70 @@
 					point.applyMatrix4( lightSpaceRotation );
 
 				}
-//console.log(frustumCubePoints);
 				var cameraFrustumBounds = new THREE.Box3();
 				cameraFrustumBounds.setFromPoints( frustumCubePoints );
-
+box.copy(cameraFrustumBounds);
 				// get warp transform near and far
 
-				var near = -cameraFrustumBounds.max.z;
-				var far = -cameraFrustumBounds.min.z;
-
+				//var near = cameraFrustumBounds.max.z;
+				//var far = cameraFrustumBounds.min.z;
+				//console.log(d);
 				// center frustum bounding box to rescale warp frustum limits
 
 				var center = new THREE.Vector3();
 				cameraFrustumBounds.getCenter( center );
-				//cameraFrustumBounds.min.sub( center );
-				//cameraFrustumBounds.max.sub( center );
+				cameraFrustumBounds.min.sub( center );
+				cameraFrustumBounds.max.sub( center );
+				var d = cameraFrustumBounds.max.z-cameraFrustumBounds.min.z;
 
 				var cosGamma = cameraDirection.dot( lightDirection ); 
 				var sinGamma = Math.sqrt( 1 - cosGamma * cosGamma ); 
 
-				var warpOriginOffset = camera.near + Math.sqrt( camera.near * camera.far ) / sinGamma;
+				var warpOriginOffset = Math.sqrt( camera.near * camera.far ) / sinGamma;
 				warpOriginOffset = Math.min(camera.far,warpOriginOffset);
+
+				lightSpaceRotation.elements[12]=-center.x;
+				lightSpaceRotation.elements[13]=-center.y;
+				lightSpaceRotation.elements[14]=(-center.z-d*0.5-warpOriginOffset);
+
+
+				var near=warpOriginOffset;
+				var far=warpOriginOffset+d;
+
+
+
+				for ( var i = 0; i < frustumCubePoints.length; i++ ){
+					var point = frustumCubePoints[ i ];
+					point.z+=-center.z-d*0.5-warpOriginOffset;
+					point.x*=point.z/warpOriginOffset;
+					point.y*=point.z/warpOriginOffset;
+				}
+				//console.log(frustumCubePoints);
+				cameraFrustumBounds.setFromPoints( frustumCubePoints );
+
+				var left = cameraFrustumBounds.min.x;
+				var right = cameraFrustumBounds.max.x;
+				var bottom = cameraFrustumBounds.min.y;
+				var top = cameraFrustumBounds.max.y;
+
+
+				//console.log(left,right,bottom,top,near,far);
+				destCamera.matrixAutoUpdate = false;
+				destCamera.matrix.getInverse(lightSpaceRotation);
+				destCamera.projectionMatrix.makePerspective( left, right , top , bottom , near , far );
+destCamera.getWorldDirection( cameraDirection ); // need to update matrix 
+				destCamera.matrixWorldNeedsUpdate = true;
+destCamera.near=near;
+destCamera.far=far;
+destCamera.fov = Math.atan ((top-bottom) / near) / Math.PI * 180 *0.5;
+destCamera.aspect = (left-right) / (top-bottom);
+				destCamera.updateProjectionMatrix ()
+
+/*
 
 				// set lightspace tranform origin
 				var cameraOrigin = center.clone();
-				cameraOrigin.z = warpOriginOffset - near; //camera.near should be warp origin offset
+				cameraOrigin.z = warpOriginOffset - near ; //camera.near should be warp origin offset
 				var camersPos=camera.position.clone().applyMatrix4(lightSpaceRotation)
 				lightSpaceRotation.elements[12]=-camersPos.x;
 				lightSpaceRotation.elements[13]=-camersPos.y;
@@ -100,7 +143,8 @@
 
 				// calc near
 
-				var nearPlaneScaleFactor = near / (far + cameraOrigin.z); 
+				//var nearPlaneScaleFactor = near / (far + cameraOrigin.z); 
+				var nearPlaneScaleFactor = near  / far; 
 				cameraFrustumBounds.max.multiplyScalar( nearPlaneScaleFactor );
 				cameraFrustumBounds.min.multiplyScalar( nearPlaneScaleFactor );
 
@@ -119,14 +163,14 @@
 
 				var flip=new THREE.Matrix4();
 				flip.set(1,0,0,0,  0,0,1,0,  0,-1,0,0,  0,0,0,1);
-				destCamera.projectionMatrix.premultiply(flip);
+				//destCamera.projectionMatrix.premultiply(flip);
 				
-				destCamera.getWorldDirection( cameraDirection );
+				//destCamera.getWorldDirection( cameraDirection );
 				//console.log(left, right , top , bottom , near , far);
 				//console.log(cameraOrigin);
 				//console.log(left,right,top,bottom,near,far);
 				destCamera.matrixWorldNeedsUpdate = true;
-
+*/
 			};
 
 			function init() {
@@ -164,12 +208,20 @@
 				dcamera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 1000 );
 				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 500 );
 				camera.position.set( 0, 0, 30 );
+				camera2 = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 100 );
+				camera2.position.set( 0, 0, 30 );
+				camera2.rotation.x=0.5;
 
 				scene = new THREE.Scene();
 				//scene.fog = new THREE.Fog( 0xCCCCCC, 50, 100 );
 
 
-				scene.add( new THREE.CameraHelper( camera ) );
+				h1=new THREE.CameraHelper( dcamera )
+				scene.add( h1 );
+				scene.add( new THREE.CameraHelper( camera2 ) );
+
+bhelper = new THREE.Box3Helper( box, 0xffff00 );
+scene.add( bhelper );
 
 				// Lights
 
@@ -308,9 +360,10 @@
 				var lightDir=new THREE.Vector3(0,-10,0);
 				lightDir.normalize();
 
-				LiSPSM(camera, dcamera, lightDir)
-
-				renderer.render( scene, dcamera );
+				LiSPSM(camera2, dcamera, lightDir)
+				h1.update();
+				bhelper.updateMatrixWorld();
+				renderer.render( scene, camera );
 
 			}
 
