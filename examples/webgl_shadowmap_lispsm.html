@@ -42,13 +42,10 @@
 				warpX.cross( cameraDirection ).normalize();
 
 				var warpZ = warpX.clone();
-				warpZ.cross( warpY ).normalize();
+				warpZ.cross( warpY );
 
 				var lightSpaceRotation = new THREE.Matrix4();
 				lightSpaceRotation.makeBasis( warpX, warpY, warpZ );
-				/*var t=new THREE.Matrix4();
-				t.getInverse(lightSpaceRotation);
-				lightSpaceRotation=t;*/
 
 				var frustumCubePoints = [
 					new THREE.Vector3( - 1, - 1, -1),
@@ -103,12 +100,15 @@ box.copy(cameraFrustumBounds);
 
 				for ( var i = 0; i < frustumCubePoints.length; i++ ){
 					var point = frustumCubePoints[ i ];
-					point.z+=-center.z-d*0.5-warpOriginOffset;
-					point.x*=point.z/warpOriginOffset;
-					point.y*=point.z/warpOriginOffset;
+					point.z=(point.z-center.z)-d*0.5-warpOriginOffset;
+					point.x=(point.x-center.x)/-point.z*far;
+					point.y=(point.y-center.y)/-point.z*far;
 				}
 				//console.log(frustumCubePoints);
 				cameraFrustumBounds.setFromPoints( frustumCubePoints );
+				var nearPlaneScaleFactor = near  / far; 
+				cameraFrustumBounds.max.multiplyScalar( nearPlaneScaleFactor );
+				cameraFrustumBounds.min.multiplyScalar( nearPlaneScaleFactor );
 
 				var left = cameraFrustumBounds.min.x;
 				var right = cameraFrustumBounds.max.x;
@@ -120,13 +120,16 @@ box.copy(cameraFrustumBounds);
 				destCamera.matrixAutoUpdate = false;
 				destCamera.matrix.getInverse(lightSpaceRotation);
 				destCamera.projectionMatrix.makePerspective( left, right , top , bottom , near , far );
+				var flip=new THREE.Matrix4();
+				flip.set(1,0,0,0,  0,0,1,0,  0,-1,0,0,  0,0,0,1);
+				destCamera.projectionMatrix.premultiply(flip);
 destCamera.getWorldDirection( cameraDirection ); // need to update matrix 
 				destCamera.matrixWorldNeedsUpdate = true;
-destCamera.near=near;
-destCamera.far=far;
-destCamera.fov = Math.atan ((top-bottom) / near) / Math.PI * 180 *0.5;
-destCamera.aspect = (left-right) / (top-bottom);
-				destCamera.updateProjectionMatrix ()
+//destCamera.near=near;
+//destCamera.far=far;
+//destCamera.fov = Math.atan ((top-bottom) / near) / Math.PI * 180 *0.5;
+//destCamera.aspect = (left-right) / (top-bottom);
+//				destCamera.updateProjectionMatrix ()
 
 /*
 
@@ -217,11 +220,11 @@ destCamera.aspect = (left-right) / (top-bottom);
 
 
 				h1=new THREE.CameraHelper( dcamera )
-				scene.add( h1 );
-				scene.add( new THREE.CameraHelper( camera2 ) );
+				//scene.add( h1 );
+				scene.add( new THREE.CameraHelper( camera ) );
 
 bhelper = new THREE.Box3Helper( box, 0xffff00 );
-scene.add( bhelper );
+//scene.add( bhelper );
 
 				// Lights
 
@@ -360,10 +363,10 @@ scene.add( bhelper );
 				var lightDir=new THREE.Vector3(0,-10,0);
 				lightDir.normalize();
 
-				LiSPSM(camera2, dcamera, lightDir)
+				LiSPSM(camera, dcamera, lightDir)
 				h1.update();
 				bhelper.updateMatrixWorld();
-				renderer.render( scene, camera );
+				renderer.render( scene, dcamera );
 
 			}
 
